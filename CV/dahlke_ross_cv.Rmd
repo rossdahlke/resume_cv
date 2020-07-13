@@ -34,7 +34,6 @@ tribble(
 # Publications section, if I had any 
 # https://imgflip.com/i/48455y
 
-# still set up
 
 # scholar::get_publications("EmD_lTEAAAAJ&EmD_lTEAAAAJ&") %>% 
 #   filter(cites > 30) %>% 

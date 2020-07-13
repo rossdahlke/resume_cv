@@ -103,6 +103,5 @@ tribble(
     when = year,
     what = glue::glue("<name>: <institution>", .open = "<", .close = ">")
   )
-
 ```
 

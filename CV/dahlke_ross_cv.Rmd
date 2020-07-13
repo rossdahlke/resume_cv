@@ -10,8 +10,7 @@ linkedin: rossdahlke
 date: "`r format(Sys.time(), '%B %Y')`"
 headcolor: 414141
 output: 
-  vitae::awesomecv:
-    #keep_tex: true
+  vitae::awesomecv
 ---
 
 ```{r setup, include=FALSE}

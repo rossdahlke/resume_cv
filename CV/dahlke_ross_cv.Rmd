@@ -24,31 +24,36 @@ library(vitae)
 ```{r}
 library(tibble)
 tribble(
-  ~ Degree, ~ Year, ~ Institution, ~ Where,
-  "PhD: Communication", "2020-Present", "Stanford University", "Palo Alto, CA",
-  "BA, Comprehensive Honors (Honors in the Liberal Arts and in the Major): Journalism and Political Science", "2014-2018", "University of Wisconsin-Madison", "Madison, WI"
+  ~ degree, ~ year, ~ institution, ~ where, ~ details,
+  "PhD: Communication", "2020-Present", "Stanford University", "Palo Alto, CA", "Knight-Hennessy Scholar",
+  "BA, Comprehensive Honors (Honors in the Liberal Arts and in the Major): Journalism and Political Science", "2014-2018", "University of Wisconsin-Madison", "Madison, WI", "Senior Thesis: Identifying the Motivations of Political Donors in Wisconsin Using Computational Methods"
 ) %>% 
-  detailed_entries(Degree, Year, Institution, Where)
+  detailed_entries(degree, year, institution, where, details)
 ```
 
-# Nobel Prizes
+# Selected Presentations
 
 ```{r}
+bibliography_entries("../bibliography/presentations.bib")
+```
+
+# Professional Experience
+
+```{r}
+library(tibble)
 tribble(
-  ~Year, ~Type, ~Desc,
-  1903, "Physics", "Awarded for her work on radioactivity with Pierre Curie and Henri Becquerel",
-  1911, "Chemistry", "Awarded for the discovery of radium and polonium"
+  ~ title, ~ year, ~ company, ~ where, ~ details,
+  "Data Scientist", "2018-2020", "Ovative/ group", "Minneapolis, MN", "Full-stack Data Scientist coding in R, Python and SQL to build tools measure the causal mechanisms of digital media exposure on online and offline sales for brands such as UnitedHealth Group, Facebook Marketplace and Coach Bags",
+  "Data Scientist", "2018-2020", "Ovative/ group", "Minneapolis, MN", "-Plan, manage, and analyze all components of nation-wide digital testing program, including power and precision calculations, developing hypotheses, geo/ list selection and splitting, and post-test analysis to determine causal impact of digital advertising on enterprise sales",
+  "Political Data Consultant", "2015-Present", "Melissa Mulliken Consulting", "Madison, WI", "Built predictive models of voters for political campaigns using survey and voter contact data for state-wide, judicial, and municipal political campaigns using machine learning in R and Python. Models were used to allocate campaign budget, prioritize advertising audiences, and make strategic campaign decisions"
 ) %>% 
-  brief_entries(
-    glue::glue("Nobel Prize in {Type}"),
-    Year, 
-    Desc
-  )
+  detailed_entries(title, year, company, where)
 ```
 
-# Publications
-
 ```{r}
+# Publications section, if I had any 
+# https://imgflip.com/i/48455y
+
 # scholar::get_publications("EmD_lTEAAAAJ&EmD_lTEAAAAJ&") %>% 
 #   filter(cites > 30) %>% 
 #   distinct(title, .keep_all = TRUE) %>%

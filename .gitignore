@@ -52,3 +52,5 @@ vignettes/*.pdf
 fonts
 
 *.cls
+
+*.log

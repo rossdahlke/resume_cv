@@ -17,37 +17,18 @@ output:
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
 library(vitae)
+library(tibble)
 ```
 
 # Education
 
 ```{r}
-library(tibble)
 tribble(
   ~ degree, ~ year, ~ institution, ~ where, ~ details,
   "PhD: Communication", "2020-Present", "Stanford University", "Palo Alto, CA", "Knight-Hennessy Scholar",
   "BA, Comprehensive Honors (Honors in the Liberal Arts and in the Major): Journalism and Political Science", "2014-2018", "University of Wisconsin-Madison", "Madison, WI", "Senior Thesis: Identifying the Motivations of Political Donors in Wisconsin Using Computational Methods"
 ) %>% 
   detailed_entries(degree, year, institution, where, details)
-```
-
-# Selected Presentations
-
-```{r}
-bibliography_entries("../bibliography/presentations.bib")
-```
-
-# Professional Experience
-
-```{r}
-library(tibble)
-tribble(
-  ~ title, ~ year, ~ company, ~ where, ~ details,
-  "Data Scientist", "2018-2020", "Ovative/ group", "Minneapolis, MN", "Full-stack Data Scientist coding in R, Python and SQL to build tools measure the causal mechanisms of digital media exposure on online and offline sales for brands such as UnitedHealth Group, Facebook Marketplace and Coach Bags",
-  "Data Scientist", "2018-2020", "Ovative/ group", "Minneapolis, MN", "-Plan, manage, and analyze all components of nation-wide digital testing program, including power and precision calculations, developing hypotheses, geo/ list selection and splitting, and post-test analysis to determine causal impact of digital advertising on enterprise sales",
-  "Political Data Consultant", "2015-Present", "Melissa Mulliken Consulting", "Madison, WI", "Built predictive models of voters for political campaigns using survey and voter contact data for state-wide, judicial, and municipal political campaigns using machine learning in R and Python. Models were used to allocate campaign budget, prioritize advertising audiences, and make strategic campaign decisions"
-) %>% 
-  detailed_entries(title, year, company, where)
 ```
 
 ```{r}
@@ -64,5 +45,64 @@ tribble(
 #   RefManageR::WriteBib("curie.bib")
 # 
 # bibliography_entries("curie.bib")
+```
+
+# Selected Presentations
+
+```{r}
+bibliography_entries("../bibliography/presentations.bib")
+```
+
+# Professional Experience
+
+```{r}
+tribble(
+  ~ title, ~ year, ~ company, ~ where, ~ details,
+  "Data Scientist", "2018-2020", "Ovative/ group", "Minneapolis, MN", "Full-stack Data Scientist coding in R, Python and SQL to build tools measure the causal mechanisms of digital media exposure on online and offline sales for brands such as UnitedHealth Group, Facebook Marketplace and Coach Bags",
+  "Data Scientist", "2018-2020", "Ovative/ group", "Minneapolis, MN", "-Plan, manage, and analyze all components of nation-wide digital testing program, including power and precision calculations, developing hypotheses, geo/ list selection and splitting, and post-test analysis to determine causal impact of digital advertising on enterprise sales",
+  "Political Data Consultant", "2015-Present", "Melissa Mulliken Consulting", "Madison, WI", "Built predictive models of voters for political campaigns using survey and voter contact data for state-wide, judicial, and municipal political campaigns using machine learning in R and Python. Models were used to allocate campaign budget, prioritize advertising audiences, and make strategic campaign decisions"
+) %>% 
+  detailed_entries(company, year, title, where)
+```
+
+# Teaching Experience
+
+```{r}
+tribble(
+  ~ year, ~ name, ~ duty, ~ institution,
+  '09/2016 - 05/2018', "Inter-LS 250: Undergraduate Research Experience","Co-led seminar of 16 underclassmen in weekly research seminar, developing and executing syllabus aimed at teaching students about research and the public good, current events in research, and presentation skills", "University of Wisconsin-Madison"
+) %>% 
+  detailed_entries(
+    when = year,
+    with = name, 
+    what = duty,
+    where = institution
+  )
+```
+
+# Awards and Honors
+```{r}
+tribble(
+  ~ year, ~ name, ~ institution, 
+  2020, "Knight-Hennessy Scholarship", "Stanford University",
+  2018, "Theodore Herfurth Award for Initiative and Efficiency ($2,000)", "University of Wisconsin-Madison",
+  2018, "Miles McMillin Memorial Scholarship ($500)", "University of Wisconsin-Madison School of Journalism", 
+  2018, "James Baughman Achievement Award ($500)", "University of Wisconsin-Madison School of Journalism",
+  2017, "Rhodes Scholarship Finalist","Rhodes Trust",
+  2017, "Marshall Scholarship Fianlist", "Marshall Aid Commemoration Commission",
+  2017, "Rose Family Undergraduate Research Grant ($1,500)", "University of Wisconsin-Madison Elections Research Center",
+  2017, "Honors Senior Thesis Summer Research Grant ($3,000)", "University of Wisconsin-Madison Honors College",
+  2017, "Elaine C. Davis Scholarship ($1,000)", "University of Wisconsin-Madison Political Science Department",
+  2017, "Cedric & Ethel Parker Scholarship ($1,500)", "University of Wisconsin-Madison School of Journalism",
+  2016, "Boundless Together Campaign Featured Alum/ Student", "University of Wisconsin-Madison Alumni Association",
+  2016, "Welton Honors Research Fellowship ($2,500)", "University of Wisconsin-Madison Honors College",
+  2015, "University League Scholarship ($1,500)", "University of Wisconsin-Madison University League",
+  2014, "U.S. Senate Youth Program ($5,000)", "U.S. Senate and William Randolph Hearst Foundation"
+) %>% 
+  detailed_entries(
+    when = year,
+    what = glue::glue("<name>: <institution>", .open = "<", .close = ">")
+  )
+
 ```
 

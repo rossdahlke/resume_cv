@@ -1,0 +1,63 @@
+---
+name: Ross Dahlke
+position: "PhD Student"
+address: "Stanford University, Department of Communication"
+www: rossdahlke.com
+email: "rdahlke@stanford.edu"
+twitter: ross_dahlke
+github: Rdahlke
+linkedin: rossdahlke
+date: "`r format(Sys.time(), '%B %Y')`"
+headcolor: 414141
+output: 
+  vitae::awesomecv:
+    #keep_tex: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+library(vitae)
+```
+
+# Education
+
+```{r}
+library(tibble)
+tribble(
+  ~ Degree, ~ Year, ~ Institution, ~ Where,
+  "PhD: Communication", "2020-Present", "Stanford University", "Palo Alto, CA",
+  "BA, Comprehensive Honors (Honors in the Liberal Arts and in the Major): Journalism and Political Science", "2014-2018", "University of Wisconsin-Madison", "Madison, WI"
+) %>% 
+  detailed_entries(Degree, Year, Institution, Where)
+```
+
+# Nobel Prizes
+
+```{r}
+tribble(
+  ~Year, ~Type, ~Desc,
+  1903, "Physics", "Awarded for her work on radioactivity with Pierre Curie and Henri Becquerel",
+  1911, "Chemistry", "Awarded for the discovery of radium and polonium"
+) %>% 
+  brief_entries(
+    glue::glue("Nobel Prize in {Type}"),
+    Year, 
+    Desc
+  )
+```
+
+# Publications
+
+```{r}
+# scholar::get_publications("EmD_lTEAAAAJ&EmD_lTEAAAAJ&") %>% 
+#   filter(cites > 30) %>% 
+#   distinct(title, .keep_all = TRUE) %>%
+#   transmute(bibtype = "Article", author = as.character(author),
+#             title = as.character(title),
+#             journaltitle = as.character(journal), year, key = row_number()) %>% 
+#   RefManageR::as.BibEntry() %>% 
+#   RefManageR::WriteBib("curie.bib")
+# 
+# bibliography_entries("curie.bib")
+```
+

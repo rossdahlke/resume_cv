@@ -46,3 +46,9 @@ vignettes/*.pdf
 *.Rproj
 
 .Rproj.user
+
+# vitae stuff
+
+fonts
+
+*.cls

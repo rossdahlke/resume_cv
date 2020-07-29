@@ -2,10 +2,10 @@
 name: Ross Dahlke
 position: "PhD Student"
 address: "Stanford University, Department of Communication"
-www: rossdahlke.com
+www: rossdahlke.github.io
 email: "rdahlke@stanford.edu"
 twitter: ross_dahlke
-github: Rdahlke
+github: rossdahlke
 linkedin: rossdahlke
 date: "`r format(Sys.time(), '%B %Y')`"
 headcolor: 414141

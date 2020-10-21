@@ -87,19 +87,18 @@ tribble(
 tribble(
   ~ year, ~ name, ~ institution, ~ amount,
   2020, "Knight-Hennessy Scholarship", "Stanford University", "",
-  2018, "Theodore Herfurth Award for Initiative and Efficiency", "University of Wisconsin-Madison", "($2,000)",
-  2018, "Miles McMillin Memorial Scholarship", "University of Wisconsin-Madison School of Journalism", "($500)",
-  2018, "James Baughman Achievement Award", "University of Wisconsin-Madison School of Journalism", "($500)",
+  2018, "Theodore Herfurth Award for Initiative and Efficiency", "University of Wisconsin-Madison", "",
+  2018, "Miles McMillin Memorial Scholarship", "University of Wisconsin-Madison School of Journalism", "",
+  2018, "James Baughman Achievement Award", "University of Wisconsin-Madison School of Journalism", "",
   2017, "Rhodes Scholarship Finalist","Rhodes Trust", "",
-  2017, "Marshall Scholarship Fianlist", "Marshall Aid Commemoration Commission", "",
-  2017, "Rose Family Undergraduate Research Grant", "University of Wisconsin-Madison Elections Research Center", "($1,500)",
-  2017, "Honors Senior Thesis Summer Research Grant", "University of Wisconsin-Madison Honors College", "($3,000)",
-  2017, "Elaine C. Davis Scholarship", "University of Wisconsin-Madison Political Science Department", "($1,000)",
-  2017, "Cedric & Ethel Parker Scholarship", "University of Wisconsin-Madison School of Journalism", "($1,500)",
-  2016, "Boundless Together Campaign Featured Alum/ Student", "University of Wisconsin-Madison Alumni Association", "",
-  2016, "Welton Honors Research Fellowship", "University of Wisconsin-Madison Honors College", "($2,500)",
-  2015, "University League Scholarship", "University of Wisconsin-Madison University League", "($1,500)",
-  2014, "U.S. Senate Youth Program", "U.S. Senate and William Randolph Hearst Foundation", "($5,000)"
+  2017, "Marshall Scholarship Finalist", "Marshall Aid Commemoration Commission", "",
+  2017, "Rose Family Undergraduate Research Grant", "University of Wisconsin-Madison Elections Research Center", "",
+  2017, "Honors Senior Thesis Summer Research Grant", "University of Wisconsin-Madison Honors College", "",
+  2017, "Elaine C. Davis Scholarship", "University of Wisconsin-Madison Political Science Department", "",
+  2017, "Cedric & Ethel Parker Scholarship", "University of Wisconsin-Madison School of Journalism", "",
+  2016, "Welton Honors Research Fellowship", "University of Wisconsin-Madison Honors College", "",
+  2015, "University League Scholarship", "University of Wisconsin-Madison University League", "",
+  2014, "U.S. Senate Youth Program", "U.S. Senate and William Randolph Hearst Foundation", ""
 ) %>% 
   detailed_entries(
     when = year,

@@ -27,7 +27,7 @@ library(tibble)
 tribble(
   ~ degree, ~ year, ~ institution, ~ where, ~ details,
   "PhD: Communication", "2020-Present", "Stanford University", "Palo Alto, CA", "Knight-Hennessy Scholar",
-  "BA, Comprehensive Honors (Honors in the Liberal Arts and in the Major): Journalism and Political Science", "2014-2018", "University of Wisconsin-Madison", "Madison, WI", "Senior Thesis: Identifying the Motivations of Political Donors in Wisconsin Using Computational Methods"
+  "BA, Comprehensive Honors (Honors in the Liberal Arts and in the Major): Journalism and Political Science", "2014-2018", "University of Wisconsin-Madison", "Madison, WI", "Honors Thesis: Identifying the Motivations of Political Donors in Wisconsin Using Computational Methods"
 ) %>% 
   detailed_entries(degree, year, institution, where, details)
 ```

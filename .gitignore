@@ -54,3 +54,5 @@ fonts
 *.cls
 
 *.log
+
+.DS_Store

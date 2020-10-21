@@ -15,6 +15,8 @@ output:
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+options(tinytex.verbose = TRUE)
+options(encoding = "UTF-8")
 library(vitae)
 library(tibble)
 ```
@@ -60,7 +62,7 @@ tribble(
   ~ title, ~ year, ~ company, ~ where, ~ details,
   "Data Scientist", "2018-2020", "Ovative/ group", "Minneapolis, MN", "Full-stack Data Scientist coding in R, Python and SQL to build tools measure the causal mechanisms of digital media exposure on online and offline sales for brands such as UnitedHealth Group, Facebook Marketplace and Coach Bags",
   "Data Scientist", "2018-2020", "Ovative/ group", "Minneapolis, MN", "-Plan, manage, and analyze all components of nation-wide digital testing program, including power and precision calculations, developing hypotheses, geo/ list selection and splitting, and post-test analysis to determine causal impact of digital advertising on enterprise sales",
-  "Political Data Consultant", "2015-Present", "Melissa Mulliken Consulting", "Madison, WI", "Built predictive models of voters for political campaigns using survey and voter contact data for state-wide, judicial, and municipal political campaigns using machine learning in R and Python. Models were used to allocate campaign budget, prioritize advertising audiences, and make strategic campaign decisions"
+  "Political Data Consultant", "2015-2020", "Melissa Mulliken Consulting", "Madison, WI", "Built predictive models of voters for political campaigns using survey and voter contact data for state-wide, judicial, and municipal political campaigns using machine learning in R and Python. Models were used to allocate campaign budget, prioritize advertising audiences, and make strategic campaign decisions"
 ) %>% 
   detailed_entries(company, year, title, where)
 ```

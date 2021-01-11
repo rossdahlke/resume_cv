@@ -49,7 +49,7 @@ tribble(
 # bibliography_entries("curie.bib")
 ```
 
-# Selected Presentations
+# Conference Presentations
 
 ```{r}
 bibliography_entries("../bibliography/presentations.bib")

@@ -27,6 +27,7 @@ library(tibble)
 tribble(
   ~ degree, ~ year, ~ institution, ~ where, ~ details,
   "PhD: Communication", "2020-Present", "Stanford University", "Palo Alto, CA", "Knight-Hennessy Scholar",
+  "PhD: Communication", "2020-Present", "Stanford University", "Palo Alto, CA", "Data Science Scholar",
   "BA, Comprehensive Honors (Honors in the Liberal Arts and in the Major): Journalism and Political Science", "2014-2018", "University of Wisconsin-Madison", "Madison, WI", "Theodore Herfurth Award for top undergraduate male student") %>% 
   detailed_entries(degree, year, institution, where, details)
 ```
@@ -74,6 +75,9 @@ tribble(
 ```{r}
 tribble(
   ~ year, ~ name, ~ institution, ~ amount,
+  2023, "Data Science Scholar", "Stanford University Data Science", "",
+  2023, "Stanford EST (Ethics, Society, and Technology) Research Grant", "Stanford University", "",
+  2023, "Stanford PACS (Philantropy and Civil Society) Research Grant", "Stanford University", "$3,000",
   2020, "Knight-Hennessy Scholarship", "Stanford University", "",
   2018, "Theodore Herfurth Award for Initiative and Efficiency", "University of Wisconsin-Madison", "",
   2018, "Miles McMillin Memorial Scholarship", "University of Wisconsin-Madison School of Journalism", "",

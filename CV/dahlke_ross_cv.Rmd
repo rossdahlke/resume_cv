@@ -1,6 +1,6 @@
 ---
 name: Ross Dahlke
-position: "PhD Student"
+position: "PhD Candidate"
 address: "Stanford University, Department of Communication"
 www: rossdahlke.github.io
 email: "rdahlke@stanford.edu"
@@ -11,6 +11,7 @@ date: "`r format(Sys.time(), '%B %Y')`"
 headcolor: 414141
 output: 
   vitae::awesomecv
+keep_tex: true
 ---
 
 ```{r setup, include=FALSE}
@@ -18,7 +19,7 @@ knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
 options(tinytex.verbose = TRUE)
 options(encoding = "UTF-8")
 library(vitae)
-library(tibble)
+library(tidyverse)
 ```
 
 # Education
@@ -26,22 +27,60 @@ library(tibble)
 ```{r}
 tribble(
   ~ degree, ~ year, ~ institution, ~ where, ~ details,
-  "PhD: Communication", "2020-Present", "Stanford University", "Palo Alto, CA", "Knight-Hennessy Scholar",
-  "PhD: Communication", "2020-Present", "Stanford University", "Palo Alto, CA", "Data Science Scholar",
-  "BA, Comprehensive Honors (Honors in the Liberal Arts and in the Major): Journalism and Political Science", "2014-2018", "University of Wisconsin-Madison", "Madison, WI", "Theodore Herfurth Award for top undergraduate male student") %>% 
+  "PhD: Communication", "2020-2024", "Stanford University", "Palo Alto, CA", "Advisor: Jeffrey T. Hancock, Committee: Jennifer Pan, Nilam Ram",
+  "PhD: Communication", "2020-2024", "Stanford University", "Palo Alto, CA", "Data Science Scholar, Stanford Data Science Program",
+  "PhD: Communication", "2020-2024", "Stanford University", "Palo Alto, CA", "Knight-Hennessy Scholar",
+  "BA, Comprehensive Honors (Honors in the Liberal Arts and in the Major) Journalism & Mass Communication; Political Science", "2014-2018", "University of Wisconsin-Madison", "Madison, WI", "Theodore Herfurth Award for top undergraduate male student",
+    "BA, Comprehensive Honors (Honors in the Liberal Arts and in the Major) Journalism & Mass Communication; Political Science", "2014-2018", "University of Wisconsin-Madison", "Madison, WI", "College of Letters & Science Dean's Prize awarded to three students") %>% 
   detailed_entries(degree, year, institution, where, details)
 ```
 
 # Publications
 
+\* indicates equal authorship
+
 ```{r}
 bibliography_entries("../bibliography/publications.bib")
 ```
 
-# Public Pre-Prints
+# Papers Under Review
+
+\* indicates equal authorship
 
 ```{r}
-bibliography_entries("../bibliography/working-papers.bib")
+bibliography_entries("../bibliography/working-papers.bib") 
+```
+
+\newpage
+
+# Public Pre-Prints & Reports
+
+```{r}
+bibliography_entries("../bibliography/reports.bib") %>% 
+  bind_cols(tibble(order = c("2", "1"))) %>% 
+  arrange(order, author)
+```
+
+# Selected Recent Conference Papers 
+
+```{r}
+bibliography_entries("../bibliography/presentations.bib")
+```
+
+# Professional Activities
+
+```{r}
+tribble(
+  ~ year, ~ name, ~ duty, 
+  '06/2023 - Present', "International Communication Association Hackathon","Co-Organizer and Social Media Coordinator, https://www.hackingcommsci.org/", 
+  '09/2020 - Present', "Media & Democracy Data Cooperative (MDDC)", "Executive Board Member and Social Media Coordinator, https://mddatacoop.org/",
+  '12/2021 - 04/2022', "Digital Data Conference (D2C)", "Co-Organizer, https://mediaengagement.org/event/digital-data-conference/",
+) %>% 
+  detailed_entries(
+    when = year,
+    with = name, 
+    what = duty
+  )
 ```
 
 # Professional Experience
@@ -49,25 +88,47 @@ bibliography_entries("../bibliography/working-papers.bib")
 ```{r}
 tribble(
   ~ title, ~ year, ~ company, ~ where, ~ details,
-  "Data Scientist", "2018-2020", "Ovative/ group", "Minneapolis, MN", "Full-stack Data Scientist coding in R, Python and SQL to build tools measure the causal mechanisms of digital media exposure on online and offline sales for brands such as UnitedHealth Group, Facebook Marketplace and Coach Bags",
-  "Data Scientist", "2018-2020", "Ovative/ group", "Minneapolis, MN", "-Plan, manage, and analyze all components of nation-wide digital testing program, including power and precision calculations, developing hypotheses, geo/ list selection and splitting, and post-test analysis to determine causal impact of digital advertising on enterprise sales",
+  "Data Scientist", "2018-2020", "Ovative Group", "Minneapolis, MN", "Full-stack Data Scientist coding in R, Python and SQL to build tools measure the causal mechanisms of digital media exposure on online and offline sales for brands such as UnitedHealth Group, Facebook Marketplace and Coach Bags",
   "Political Data Consultant", "2015-2024", "Melissa Mulliken Consulting", "Madison, WI", "Built predictive models of voters for political campaigns using survey and voter contact data for state-wide, judicial, and municipal political campaigns using machine learning in R and Python. Models were used to allocate campaign budget, prioritize advertising audiences, and make strategic campaign decisions"
 ) %>% 
   detailed_entries(company, year, title, where)
 ```
 
+\newpage
+
 # Teaching Experience
 
 ```{r}
 tribble(
-  ~ year, ~ name, ~ duty, ~ institution,
-  '09/2016 - 05/2018', "Inter-LS 250: Undergraduate Research Experience","Co-led seminar of 16 underclassmen in weekly research seminar, developing and executing syllabus aimed at teaching students about research and the public good, current events in research, and presentation skills", "University of Wisconsin-Madison"
+  ~ year, ~ name, ~ duty, ~ institution, ~ details,
+  '03/2024 - 06/2024', "Communication 124/224: Truth, Trust & Technology","Teaching Assistant", "Stanford University", "Co-developed hands-on `Research in the Wild' assignments that have students analyze data with and integrate generative AI into their daily lives to understand how AI is changing trust and conceptions of truth.",
+  '01/2023 - 03/2023', "Communication 172/272: Media Psychology","Teaching Assistant", "Stanford University", "Developed lecture and lab assignment using prompt engineering with generative AI (text and image) to generate creative media.",
+  '09/2016 - 05/2018', "Inter-LS 250: Undergraduate Research Experience", "Teaching Fellow", "University of Wisconsin-Madison", "Co-led seminar of 16 underclassmen in weekly research seminar, developing and executing syllabus aimed at teaching students about research and the public good, current events in research, and presentation skills." 
 ) %>% 
   detailed_entries(
     when = year,
     with = name, 
     what = duty,
-    where = institution
+    where = institution,
+    why = details
+  )
+```
+
+# Funding
+```{r}
+tribble(
+  ~ year, ~ name, ~ institution, ~ amount,
+    2024, "Non-Western Countries Expanding Online Trust & Safety Research Grant", "Stanford Cyber Policy Center", "$15,000",
+  2023, "Data Science Scholar", "Stanford University Data Science", "~$93,000",
+  2023, "Stanford EST (Ethics, Society, and Technology) Research Grant", "Stanford University", "$25,000",
+  2023, "Stanford PACS (Philantropy and Civil Society) Research Grant", "Stanford University", "$3,000",
+  2023, "Graduate Student Researcher", "Office of Army Research & Department of Defense Multidisciplinary University Research Initiative Grant (MURI): Multi-Modal Network Information Dynamics Group", "",
+  2020, "Knight-Hennessy Scholarship", "Stanford University", "~$280,000",
+  2017, "Rose Family Undergraduate Research Grant", "University of Wisconsin-Madison Elections Research Center", "$5,000"
+) %>% 
+  detailed_entries(
+    when = year,
+    what = glue::glue("<name>: <institution> <amount>", .open = "<", .close = ">")
   )
 ```
 
@@ -75,22 +136,14 @@ tribble(
 ```{r}
 tribble(
   ~ year, ~ name, ~ institution, ~ amount,
-  2023, "Data Science Scholar", "Stanford University Data Science", "",
-  2023, "Stanford EST (Ethics, Society, and Technology) Research Grant", "Stanford University", "",
-  2023, "Stanford PACS (Philantropy and Civil Society) Research Grant", "Stanford University", "$3,000",
-  2020, "Knight-Hennessy Scholarship", "Stanford University", "",
+  2024, "Top Reviewer Award, 2023", "Social Science Computer Review", "",
   2018, "Theodore Herfurth Award for Initiative and Efficiency", "University of Wisconsin-Madison", "",
-  2018, "Miles McMillin Memorial Scholarship", "University of Wisconsin-Madison School of Journalism", "",
-  2018, "James Baughman Achievement Award", "University of Wisconsin-Madison School of Journalism", "",
+  2018, "Dean's Prize", "University of Wisconsin-Madison College of Letters & Science", "",
+  2018, "Miles McMillin Memorial Scholarship", "University of Wisconsin-Madison School of Journalism & Mass Communication", "",
+  2018, "James Baughman Achievement Award", "University of Wisconsin-Madison School of Journalism & Mass Communication", "",
   2017, "Rhodes Scholarship Finalist","Rhodes Trust", "",
   2017, "Marshall Scholarship Finalist", "Marshall Aid Commemoration Commission", "",
-  2017, "Rose Family Undergraduate Research Grant", "University of Wisconsin-Madison Elections Research Center", "",
-  2017, "Honors Senior Thesis Summer Research Grant", "University of Wisconsin-Madison Honors College", "",
-  2017, "Elaine C. Davis Scholarship", "University of Wisconsin-Madison Political Science Department", "",
-  2017, "Cedric & Ethel Parker Scholarship", "University of Wisconsin-Madison School of Journalism", "",
-  2016, "Welton Honors Research Fellowship", "University of Wisconsin-Madison Honors College", "",
-  2015, "University League Scholarship", "University of Wisconsin-Madison University League", "",
-  2014, "U.S. Senate Youth Program", "U.S. Senate and William Randolph Hearst Foundation", ""
+
 ) %>% 
   detailed_entries(
     when = year,

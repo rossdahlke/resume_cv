@@ -1,0 +1,80 @@
+---
+title: "Job Talk Graphs"
+author: "Ross Dahlke"
+date: "`r Sys.Date()`"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+```
+
+```{r}
+misinfo_stats <- tribble(
+  ~outcome, ~year, ~ymin, ~y, ~ymax,
+  "Percentage Exposed", "2016", .408, .443, .477, 
+  "Percentage Exposed", "2020", .225, .262, .298,
+  "Exposures Among Exposed", "2016", 26.3, 32.1, 37.9,
+  "Exposures Among Exposed", "2020", 15.2, 22.6, 30.4,
+  "Time Spent Per Visit (in Seconds)", "2016", NA, 64.2, NA,
+  "Time Spent Per Visit (in Seconds)", "2020", 34.5, 38.6, 42.7
+) %>% 
+  mutate(year = factor(year, levels = c("2020", "2016")))
+```
+
+```{r fig.height = 4, fig.width = 7}
+panel_a <- misinfo_stats %>% 
+  filter(outcome == "Percentage Exposed") %>% 
+  ggplot(aes(year, y, ymin = ymin, ymax = ymax, color = year, shape = year)) +
+  geom_pointrange(size = 1, alpha = 1) +
+  scale_y_continuous(labels = scales::percent_format(), breaks = seq(0, 1, .025)) +
+  scale_color_manual(values = c("#33638DDF", "#3CBB75FF")) + 
+  coord_flip() +
+  labs(title = "A. Percentage Exposed", 
+       y = "Percentage Exposed", 
+       x = "") +
+  theme_bw() +
+  theme(legend.position = "none")
+```
+
+```{r fig.height=4, fig.width = 7}
+panel_b <- misinfo_stats %>% 
+  filter(outcome == "Exposures Among Exposed") %>% 
+  ggplot(aes(year, y, ymin = ymin, ymax = ymax, color = year, shape = year)) +
+  geom_point() + 
+  geom_pointrange(size = 1, alpha = 1) +
+  scale_color_manual(values = c("#33638DDF", "#3CBB75FF")) + 
+  coord_flip() +
+  labs(title = "B. Avg. Exposures Among Exposed", 
+       y = "Avg. Exposures Among Exposed", 
+       x = "Election Year") +
+  theme_bw() +
+  theme(legend.position = "none")
+```
+
+```{r fig.height=4, fig.width = 7}
+panel_c <- misinfo_stats %>% 
+  filter(outcome == "Time Spent Per Visit (in Seconds)") %>% 
+  ggplot(aes(year, y, ymin = ymin, ymax = ymax, color = year, shape = year)) +
+  geom_point() + 
+  geom_pointrange(size = 1, alpha = 1) +
+  scale_y_continuous(breaks = seq(0, 70, 5)) +
+  scale_color_manual(values = c("#33638DDF", "#3CBB75FF")) + 
+  coord_flip() +
+  labs(title = "C. Time Spent Per Visit (in Seconds)*", 
+       y = "Time Spent Per Visit (in Seconds)", 
+       x = "",
+       caption = "*2016 CI not available") +
+  theme_bw() +
+  theme(legend.position = "none")
+```
+
+
+```{r fig.height = 4, fig.width = 7}
+ggpubr::ggarrange(panel_a, panel_b, panel_c, ncol = 1)
+
+ggsave("figures/job-talk-1.pdf")
+```
+
+

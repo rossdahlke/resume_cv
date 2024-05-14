@@ -56,15 +56,9 @@ bibliography_entries("../bibliography/working-papers.bib")
 # Public Pre-Prints & Reports
 
 ```{r}
-bibliography_entries("../bibliography/reports.bib") %>% 
-  bind_cols(tibble(order = c("2", "1"))) %>% 
+bibliography_entries("../bibliography/reports.bib") %>%
+  bind_cols(tibble(order = c("2", "1"))) %>%
   arrange(order, author)
-```
-
-# Selected Recent Conference Papers 
-
-```{r}
-bibliography_entries("../bibliography/presentations.bib")
 ```
 
 # Professional Activities
@@ -89,7 +83,7 @@ tribble(
 tribble(
   ~ title, ~ year, ~ company, ~ where, ~ details,
   "Data Scientist", "2018-2020", "Ovative Group", "Minneapolis, MN", "Full-stack Data Scientist coding in R, Python and SQL to build tools measure the causal mechanisms of digital media exposure on online and offline sales for brands such as UnitedHealth Group, Facebook Marketplace and Coach Bags",
-  "Political Data Consultant", "2015-2024", "Melissa Mulliken Consulting", "Madison, WI", "Built predictive models of voters for political campaigns using survey and voter contact data for state-wide, judicial, and municipal political campaigns using machine learning in R and Python. Models were used to allocate campaign budget, prioritize advertising audiences, and make strategic campaign decisions"
+  "Political Data Consultant", "2015-2024", "Self-Employed", "Madison, WI", "Built predictive models of voters for political campaigns using survey and voter contact data for state-wide, judicial, and municipal political campaigns using machine learning in R and Python. Models were used to allocate campaign budget, prioritize advertising audiences, and make strategic campaign decisions"
 ) %>% 
   detailed_entries(company, year, title, where)
 ```

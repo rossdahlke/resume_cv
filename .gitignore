@@ -51,8 +51,17 @@ vignettes/*.pdf
 
 fonts
 
-*.cls
-
 *.log
 
 .DS_Store
+
+# XeLaTeX / biblatex build artifacts
+*.aux
+*.bbl
+*.bcf
+*.blg
+*.fdb_latexmk
+*.fls
+*.out
+*.run.xml
+*.xdv

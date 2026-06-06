@@ -4,53 +4,39 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Research & troubleshooting
 
-You have `WebSearch` and `WebFetch` tools available. Reach for them when a LaTeX/biblatex error, package option, or API detail isn't obvious from local files — official docs and CTAN pages are often the fastest way to resolve obscure issues (e.g., load-order quirks, deprecated options, package-version-specific behavior) rather than trial-and-error in the build.
+You have `WebSearch` and `WebFetch` tools available. Reach for them when a LaTeX error, package option, or API detail isn't obvious from local files — official docs and CTAN pages are often the fastest way to resolve obscure issues (e.g., load-order quirks, deprecated options, package-version-specific behavior) rather than trial-and-error in the build.
 
 ## Repository Overview
 
-This repo holds two parallel CV/resume pipelines:
+This repo holds Ross Dahlke's academic CV, hand-authored in **pure LaTeX** against a custom class (`dahlkecv.cls`), rendered with XeLaTeX. **No biblatex/biber** — publications are written directly as `\pub{…}` macro calls (see below). This is deliberate: a CV is a hand-curated list, and biblatex's sorting/numbering/APA machinery caused more problems than it solved.
 
-- **`CV/`** — the academic CV. Hand-authored in **pure LaTeX** against a custom class (`dahlkecv.cls`), rendered with XeLaTeX. **No biblatex/biber** — publications are written directly as `\pub{…}` macro calls (see below). This is deliberate: a CV is a hand-curated list, and biblatex's sorting/numbering/APA machinery caused more problems than it solved.
-- **`resume/`** — the professional resume. Still built from R Markdown with the `vitae` package. (Not yet migrated.)
-
-The `bibliography/` `.bib` files are now used **only by the resume**. The CV no longer reads them; when you add a paper, you edit both `CV/sections/publications.tex` (for the CV) and the `.bib` (only if you want the resume updated too).
+> An older `moderncv`-based CV and an R Markdown / `vitae` professional resume previously lived here. Both have been retired; they remain recoverable in git history under the `archive/vitae-cv` tag (`git checkout archive/vitae-cv`).
 
 ## Project Structure
 
-- `CV/`
-  - `dahlke_ross_cv.tex` — main document; `\input`s each section file
-  - `dahlkecv.cls` — custom class. Loads **TeX Gyre Termes by filename** (see "Fonts" below) and defines all CV macros: `\cvheader`, `\cventry`, `\cvedu`, `\cvtalk`, `\cvaward`, `\cvcourse`, `\cvadvisee`, `\cvservice`, `\cvreviewerlist`, `\cvnote`, and the publication system (`publist` environment + `\pub`, `\pubaward`, `\pubcoverage`, `\cvdoi`, `\cvurl`).
-  - `latexmkrc` — pins the build to XeLaTeX (no biber).
-  - `sections/*.tex` — one file per CV section (`appointments`, `education`, `publications`, `talks`, `awards`, `teaching`, `advising`, `service`, `experience`).
-  - `fonts/` — gitignored.
-- `resume/` — R Markdown resume (`dahlke_ross_resume.Rmd`, vitae-based; still uses the `.bib` files).
-- `bibliography/` — BibTeX files (resume only now).
-  - `publications.bib`, `working-papers.bib`, `reports.bib`, `presentations.bib`.
-- `figures/` — supporting graphics.
+- `dahlke_ross_cv.tex` — main document; `\input`s each section file.
+- `dahlkecv.cls` — custom class. Loads **TeX Gyre Termes by filename** (see "Key Dependencies" below) and defines all CV macros: `\cvheader`, `\cventry`, `\cvedu`, `\cvtalk`, `\cvaward`, `\cvcourse`, `\cvadvisee`, `\cvservice`, `\cvreviewerlist`, `\cvnote`, and the publication system (`publist` environment + `\pub`, `\pubaward`, `\pubcoverage`, `\cvdoi`, `\cvurl`).
+- `latexmkrc` — pins the build to XeLaTeX (no biber).
+- `sections/*.tex` — one file per CV section (`appointments`, `education`, `publications`, `talks`, `awards`, `teaching`, `advising`, `service`, `experience`).
+- `dahlke_ross_cv.pdf` — the built CV (committed).
+- `fonts/` — gitignored, unused by the Termes-based build.
 
 ## Building the CV
 
 ```bash
-cd CV && latexmk -xelatex dahlke_ross_cv.tex
+latexmk -xelatex dahlke_ross_cv.tex
 ```
 
 `latexmkrc` forces XeLaTeX. No biber step. The descending publication numbers auto-count via the `.aux` (each `publist` writes its entry total back to `.aux`), so latexmk's normal "rerun until `.aux` is stable" loop handles it — usually two passes. `latexmk -C` cleans all artifacts.
 
-## Building the Resume
-
-```r
-rmarkdown::render("resume/dahlke_ross_resume.Rmd")
-```
-
 ## Key Dependencies
 
-- TeX distribution with XeLaTeX (TinyTeX is fine). No biber/biblatex needed for the CV.
+- TeX distribution with XeLaTeX (TinyTeX is fine). No biber/biblatex needed.
 - **Fonts: TeX Gyre Termes**, which ships with TeX Live — so there is no external font dependency and the CV renders identically on any machine. It is loaded *by filename* (`texgyretermes` + `Extension=.otf`, `*-regular`/`*-bold`/`*-italic`/`*-bolditalic`) so fontspec resolves it via kpsewhich, not the system font DB. Do **not** revert to a system font like STIX Two Text: macOS ships those as *variable fonts*, which XeLaTeX cannot extract a bold weight from — `\textbf` then silently renders as regular. (That bug is the whole reason this CV uses Termes.)
-- For the resume only: R + `rmarkdown` + `vitae` (which still reads the `.bib` files).
 
 ## CV Document Architecture
 
-### Section flow in `CV/dahlke_ross_cv.tex`
+### Section flow in `dahlke_ross_cv.tex`
 
 1. `\cvheader{name}{position}{affiliation}{email}{website}{handle}` — three-line masthead, contact column right-aligned.
 2. Academic Appointments, Education (using `\cventry` / `\cvedu`).
@@ -85,14 +71,14 @@ Publications, Papers Under Review, and Public Pre-Prints & Reports are plain han
 
 ### Adding a publication
 
-1. Add a `\pub{…}{…}{…}{…}{…}` entry to the right `publist` in `CV/sections/publications.tex` (Publications / Papers Under Review / Reports).
+1. Add a `\pub{…}{…}{…}{…}{…}` entry to the right `publist` in `sections/publications.tex` (Publications / Papers Under Review / Reports).
 2. **Place it in the correct position — the first entry in a list renders at the top (highest number):**
    1. **Year** (newest to oldest).
    2. **Publication status** (within year): Forthcoming/Accepted > Conditionally Accepted > Revise & Resubmit > Under Review > Invited to Submit.
    3. **Authorship**: within a status, Ross as first author (or co-first with `*`) before middle/later-author papers.
    4. **Venue prestige**: within a status and authorship group, higher-prestige venues first.
 3. Bold the name (`\textbf{Dahlke}`), give the title its own trailing `.`/`?`, add `\cvdoi{}`/`\cvurl{}` for links. No counts to bump — numbers auto-update.
-4. Rebuild with `latexmk -xelatex`. (Optionally also add/update the entry in the matching `.bib` so the resume stays in sync.)
+4. Rebuild with `latexmk -xelatex`.
 
 ### Adding per-paper award or media coverage
 
@@ -106,14 +92,14 @@ Pass them as the 5th argument of `\pub`:
 
 ### Updating contact information
 
-Edit the `\cvheader{…}` call near the top of `CV/dahlke_ross_cv.tex`.
+Edit the `\cvheader{…}` call near the top of `dahlke_ross_cv.tex`.
 
 ### Adding a new CV section
 
-1. Create `CV/sections/<name>.tex`.
+1. Create `sections/<name>.tex`.
 2. Use the existing semantic macros from `dahlkecv.cls`, or add a new one to the class if needed.
 3. `\input{sections/<name>}` from `dahlke_ross_cv.tex` in the position you want it to appear.
 
 ## Build Artifacts
 
-Gitignored XeLaTeX/biber intermediates: `*.aux`, `*.bbl`, `*.bcf`, `*.blg`, `*.fdb_latexmk`, `*.fls`, `*.out`, `*.run.xml`, `*.xdv`, `*.log`. The PDF (`dahlke_ross_cv.pdf`) is committed. Clean all with `latexmk -C`.
+Gitignored XeLaTeX intermediates: `*.aux`, `*.bbl`, `*.bcf`, `*.blg`, `*.fdb_latexmk`, `*.fls`, `*.out`, `*.run.xml`, `*.xdv`, `*.log`. The PDF (`dahlke_ross_cv.pdf`) is committed. Clean all with `latexmk -C`.

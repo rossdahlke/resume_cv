@@ -10,26 +10,22 @@ You have `WebSearch` and `WebFetch` tools available. Reach for them when a LaTeX
 
 This repo holds two parallel CV/resume pipelines:
 
-- **`CV/`** — the academic CV. Hand-authored in **pure LaTeX** against a custom class (`dahlkecv.cls`), rendered with XeLaTeX + biblatex/biber.
+- **`CV/`** — the academic CV. Hand-authored in **pure LaTeX** against a custom class (`dahlkecv.cls`), rendered with XeLaTeX. **No biblatex/biber** — publications are written directly as `\pub{…}` macro calls (see below). This is deliberate: a CV is a hand-curated list, and biblatex's sorting/numbering/APA machinery caused more problems than it solved.
 - **`resume/`** — the professional resume. Still built from R Markdown with the `vitae` package. (Not yet migrated.)
 
-They share the bibliography under `bibliography/`.
+The `bibliography/` `.bib` files are now used **only by the resume**. The CV no longer reads them; when you add a paper, you edit both `CV/sections/publications.tex` (for the CV) and the `.bib` (only if you want the resume updated too).
 
 ## Project Structure
 
 - `CV/`
   - `dahlke_ross_cv.tex` — main document; `\input`s each section file
-  - `dahlkecv.cls` — custom class (fonts, colors, and all CV-specific macros: `\cvheader`, `\cventry`, `\cvedu`, `\cvtalk`, `\cvaward`, `\cvcourse`, `\cvadvisee`, `\cvservice`, `\cvreviewerlist`, descending-numbered `cvnumbered` bib environment)
-  - `biblatex-dm.cfg` — custom biblatex datamodel overlay that adds the `award` and `coverage` fields for per-paper honors and press coverage. biblatex auto-loads this file name.
-  - `latexmkrc` — pins the build to XeLaTeX.
+  - `dahlkecv.cls` — custom class. Loads **TeX Gyre Termes by filename** (see "Fonts" below) and defines all CV macros: `\cvheader`, `\cventry`, `\cvedu`, `\cvtalk`, `\cvaward`, `\cvcourse`, `\cvadvisee`, `\cvservice`, `\cvreviewerlist`, `\cvnote`, and the publication system (`publist` environment + `\pub`, `\pubaward`, `\pubcoverage`, `\cvdoi`, `\cvurl`).
+  - `latexmkrc` — pins the build to XeLaTeX (no biber).
   - `sections/*.tex` — one file per CV section (`appointments`, `education`, `publications`, `talks`, `awards`, `teaching`, `advising`, `service`, `experience`).
   - `fonts/` — gitignored.
-- `resume/` — R Markdown resume (`dahlke_ross_resume.Rmd`, vitae-based).
-- `bibliography/` — shared BibTeX files.
-  - `publications.bib` — published work.
-  - `working-papers.bib` — under review / forthcoming.
-  - `reports.bib` — public pre-prints and reports.
-  - `presentations.bib` — conference presentations.
+- `resume/` — R Markdown resume (`dahlke_ross_resume.Rmd`, vitae-based; still uses the `.bib` files).
+- `bibliography/` — BibTeX files (resume only now).
+  - `publications.bib`, `working-papers.bib`, `reports.bib`, `presentations.bib`.
 - `figures/` — supporting graphics.
 
 ## Building the CV
@@ -38,7 +34,7 @@ They share the bibliography under `bibliography/`.
 cd CV && latexmk -xelatex dahlke_ross_cv.tex
 ```
 
-`latexmkrc` forces XeLaTeX and invokes biber automatically. `latexmk -C` cleans all artifacts.
+`latexmkrc` forces XeLaTeX. No biber step. The descending publication numbers auto-count via the `.aux` (each `publist` writes its entry total back to `.aux`), so latexmk's normal "rerun until `.aux` is stable" loop handles it — usually two passes. `latexmk -C` cleans all artifacts.
 
 ## Building the Resume
 
@@ -48,9 +44,9 @@ rmarkdown::render("resume/dahlke_ross_resume.Rmd")
 
 ## Key Dependencies
 
-- TeX distribution with XeLaTeX, biber, and biblatex-apa (TinyTeX is fine).
-- Fonts: STIX Two Text (preferred, falls back to Source Serif 4 → EB Garamond → Latin Modern Roman).
-- For the resume only: R + `rmarkdown` + `vitae`.
+- TeX distribution with XeLaTeX (TinyTeX is fine). No biber/biblatex needed for the CV.
+- **Fonts: TeX Gyre Termes**, which ships with TeX Live — so there is no external font dependency and the CV renders identically on any machine. It is loaded *by filename* (`texgyretermes` + `Extension=.otf`, `*-regular`/`*-bold`/`*-italic`/`*-bolditalic`) so fontspec resolves it via kpsewhich, not the system font DB. Do **not** revert to a system font like STIX Two Text: macOS ships those as *variable fonts*, which XeLaTeX cannot extract a bold weight from — `\textbf` then silently renders as regular. (That bug is the whole reason this CV uses Termes.)
+- For the resume only: R + `rmarkdown` + `vitae` (which still reads the `.bib` files).
 
 ## CV Document Architecture
 
@@ -64,17 +60,22 @@ rmarkdown::render("resume/dahlke_ross_resume.Rmd")
 6. Service.
 7. Professional Experience.
 
-### Bibliography rendering
+### Publication lists (`\pub` / `publist`)
 
-- `\usepackage[style=apa,sorting=ydnt,backend=biber,defernumbers=true]{biblatex}` in the class.
-- Each `.bib` is loaded in its own `\begin{refsection}[path]{...}\printbibliography[env=cvnumbered]\end{refsection}` block so numbering restarts per section.
-- `cvnumbered` is a custom `defbibenvironment` that produces a hanging-indent list. Numbers descend (newest = highest) via `\cvbibsection{N}` declaring the entry total before each block, and `\cvbiblabel` computing `N − idx + 1`.
-- **Hardcoded entry counts**: `\cvbibsection{13}` etc. must be bumped whenever a `.bib` file gains or loses an entry. See `sections/publications.tex`.
-- `\mkbibnamefamily` is redefined to bold any "Dahlke" / "Dahlke*" family-name token in author lists. Doesn't affect sorting.
-- `biblatex-dm.cfg` adds two optional fields per bib entry:
-  - `award={…}` — renders as an italic `Award · <text>` sub-line under the entry.
-  - `coverage={…}` — renders as an italic `Coverage · <text>` sub-line. Use `\href{url}{label}` for linked outlets.
-- The `finentry` bibmacro is overridden in `dahlkecv.cls` to print those sub-lines.
+Publications, Papers Under Review, and Public Pre-Prints & Reports are plain hand-written lists in `sections/publications.tex`. Each is wrapped in a `publist` environment with a unique key:
+
+```latex
+\begin{publist}{publications}   % key must be unique per list
+\pub{authors}{year}{title (include its own trailing . or ?)}{venue, vol(iss), pp. \cvdoi{...}}{extras}
+...
+\end{publist}
+```
+
+- **Order = the order you type.** First entry = top = highest number. There is no automatic sorting to fight. Keep entries in the order described under "Adding a publication".
+- **Descending numbers auto-count** — no hardcoded totals. Each `publist` writes its entry count to the `.aux` (`\setcvpubtotal{key}{N}`); the next compile reads it so labels run high→low. (First-ever compile shows odd/negative numbers for one pass; latexmk reruns and they settle.)
+- **Bold your own name** by typing `\textbf{Dahlke}` (or `\textbf{Dahlke}*` for co-first) directly in the author field. Nothing magic — it's literal bold. This works because the CV uses TeX Gyre Termes, which has a real bold face.
+- **DOIs / URLs**: `\cvdoi{10.xxxx/yyyy}` prints a clickable, breakable `https://doi.org/...`. `\cvurl{https://...}` for non-DOI links. URLs with `# % _` etc. must have those characters backslash-escaped (`\_`), since the macro reads its argument once (e.g. `\cvurl{https://doi.org/10.31234/osf.io/qtdmg\_v1}`).
+- **Per-paper award / press**: pass `\pubaward{...}` and/or `\pubcoverage{...}` as the 5th `\pub` argument (empty `{}` if none). Each renders as an italic `Award ·` / `Coverage ·` sub-line. Use `\href{url}{label}` for linked outlets inside coverage.
 
 ### Date on the CV footer
 
@@ -84,22 +85,23 @@ rmarkdown::render("resume/dahlke_ross_resume.Rmd")
 
 ### Adding a publication
 
-1. Add a BibTeX entry to the appropriate `.bib` file in `bibliography/`.
-2. **Sort entries in the following order — the first entry in the file appears first (top) in the rendered CV:**
+1. Add a `\pub{…}{…}{…}{…}{…}` entry to the right `publist` in `CV/sections/publications.tex` (Publications / Papers Under Review / Reports).
+2. **Place it in the correct position — the first entry in a list renders at the top (highest number):**
    1. **Year** (newest to oldest).
    2. **Publication status** (within year): Forthcoming/Accepted > Conditionally Accepted > Revise & Resubmit > Under Review > Invited to Submit.
-   3. **Authorship**: Within the same status, Ross Dahlke as first author (or co-first author with `*`) comes before middle/later-author papers.
-   4. **Venue prestige**: Within the same status and authorship group, higher-prestige venues first.
-3. **Bump the corresponding `\cvbibsection{N}` count** in `CV/sections/publications.tex` so descending numbers stay correct.
-4. Rebuild with `latexmk -xelatex`.
+   3. **Authorship**: within a status, Ross as first author (or co-first with `*`) before middle/later-author papers.
+   4. **Venue prestige**: within a status and authorship group, higher-prestige venues first.
+3. Bold the name (`\textbf{Dahlke}`), give the title its own trailing `.`/`?`, add `\cvdoi{}`/`\cvurl{}` for links. No counts to bump — numbers auto-update.
+4. Rebuild with `latexmk -xelatex`. (Optionally also add/update the entry in the matching `.bib` so the resume stays in sync.)
 
 ### Adding per-paper award or media coverage
 
-Inside a bib entry, add:
+Pass them as the 5th argument of `\pub`:
 
-```bibtex
-award={Top Paper, ICA Political Communication Division 2024},
-coverage={\href{https://nytimes.com/...}{The New York Times}, \href{...}{Wired}}
+```latex
+\pub{authors}{year}{title.}{venue. \cvdoi{...}}
+  {\pubaward{Top Paper, ICA Political Communication Division 2024}%
+   \pubcoverage{\href{https://nytimes.com/...}{The New York Times}, \href{...}{Wired}}}
 ```
 
 ### Updating contact information

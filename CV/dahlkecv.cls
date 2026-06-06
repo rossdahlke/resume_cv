@@ -15,7 +15,7 @@
 \RequirePackage{etoolbox}
 \RequirePackage{url}
 \RequirePackage[hidelinks,breaklinks=true,colorlinks=true]{hyperref}
-\RequirePackage[style=apa,sorting=ydnt,backend=biber,defernumbers=true]{biblatex}
+\urlstyle{same}
 
 \definecolor{accent}{HTML}{414141}
 \definecolor{muted}{HTML}{6F6F6F}
@@ -23,13 +23,20 @@
 
 \AtBeginDocument{\hypersetup{allcolors=accent}}
 
-\IfFontExistsTF{STIX Two Text}{%
-  \setmainfont{STIX Two Text}[Ligatures=TeX]%
-}{%
-  \IfFontExistsTF{Source Serif 4}{\setmainfont{Source Serif 4}[Ligatures=TeX]}{%
-    \IfFontExistsTF{EB Garamond}{\setmainfont{EB Garamond}[Ligatures=TeX]}{%
-      \setmainfont{Latin Modern Roman}}}%
-}
+% TeX Gyre Termes (a Times clone, shipped with TeX Live) loaded BY FILENAME so
+% fontspec resolves it via kpsewhich, not the system font database. This is
+% deliberate: it has separate static Regular/Bold/Italic/BoldItalic .otf files,
+% so \textbf actually renders bold, and the result is identical on every machine.
+% (Do NOT switch to a system font like STIX Two Text — macOS ships those as
+% variable fonts that XeLaTeX cannot extract a bold weight from.)
+\setmainfont{texgyretermes}[
+  Extension=.otf,
+  UprightFont=*-regular,
+  BoldFont=*-bold,
+  ItalicFont=*-italic,
+  BoldItalicFont=*-bolditalic,
+  Ligatures=TeX
+]
 
 \pagestyle{fancy}
 \fancyhf{}
@@ -200,63 +207,57 @@
 \newcommand{\cvnote}[1]{{\small\itshape\color{muted}#1}\par\vspace{0.3em}}
 
 %% --------------------------------------------------------------
-%% Bibliography customization
+%% Publication lists (plain LaTeX — no biblatex/biber)
 %% --------------------------------------------------------------
+%
+% A publication list is just a hand-ordered, descending-numbered hanging list.
+% Entries render in the order written (first = top = highest number). To bold
+% your own name, type \textbf{Dahlke} in the author field. No .bib, no biber.
 
-% Custom fields `award` and `coverage` are declared in dahlkecv-datamodel.dbx
-% and loaded via the biblatex `datamodel=` option above.
+% Self-linking URL in the body font, breakable. Use \cvdoi for DOIs.
+% Both read their argument once, so URLs containing # % _ etc. must be written
+% with those characters escaped (\_ \# \%); \href/\nolinkurl normalise them.
+\newcommand{\cvurl}[1]{\href{#1}{\nolinkurl{#1}}}
+\newcommand{\cvdoi}[1]{\cvurl{https://doi.org/#1}}
 
-% Bold the family name "Dahlke" wherever it appears in author lists.
-% Redefine \mkbibnamefamily to bold matching strings. Safe: doesn't affect sorting.
-\renewcommand*{\mkbibnamefamily}[1]{%
-  \ifboolexpr{
-    test {\ifstrequal{#1}{Dahlke}}
-    or test {\ifstrequal{#1}{Dahlke*}}
-  }{\mkbibbold{#1}}{#1}%
-}
+% Optional per-paper sub-lines (used as the 5th arg of \pub).
+\newcommand{\pubaward}[1]{%
+  \par\vspace{1pt}{\small\color{muted}\textit{Award}~\textperiodcentered~#1}}
+\newcommand{\pubcoverage}[1]{%
+  \par\vspace{1pt}{\small\color{muted}\textit{Coverage}~\textperiodcentered~#1}}
 
-% Render "Award" and "Coverage" sub-lines after each entry.
-\renewbibmacro*{finentry}{%
-  \finentry
-  \iffieldundef{award}{}{%
-    \par\vspace{1pt}\hspace*{2.3em}%
-    {\small\color{muted}\textit{Award}~\textperiodcentered~\printfield{award}}%
-  }%
-  \iffieldundef{coverage}{}{%
-    \par\vspace{1pt}\hspace*{2.3em}%
-    {\small\color{muted}\textit{Coverage}~\textperiodcentered~\printfield{coverage}}%
-  }%
-}
+% Descending numbers with NO hardcoded totals: each publist writes its entry
+% count to the .aux under a key; the next compile reads it back so labels run
+% high-to-low (newest = highest). latexmk reruns until stable.
+\newcounter{cvpubidx}
+\newcommand{\setcvpubtotal}[2]{\csgdef{cvpubtotal@#1}{#2}}
+% Total for a key, or 0 before the first compile has written the .aux.
+\newcommand{\cvpubtotal}[1]{\ifcsname cvpubtotal@#1\endcsname\csname cvpubtotal@#1\endcsname\else0\fi}
 
-% Bibliography environment: numbered hanging list with descending labels.
-% Uses two-pass compilation: first pass records totals to aux; second pass reads them.
-\newcounter{cvbibtotal}
-\newcommand{\setcvbibtotal}[1]{\csdef{cvbibtotal@#1}{\number#1}}
-
-\defbibenvironment{cvnumbered}
-  {\list{%
-     \cvbiblabel
-   }%
-   {\setlength{\labelwidth}{2em}%
+\newenvironment{publist}[1]{%
+  \def\cv@publistkey{#1}%
+  \setcounter{cvpubidx}{0}%
+  \begin{list}{}{%
+    \setlength{\labelwidth}{2.2em}%
     \setlength{\labelsep}{0.6em}%
-    \setlength{\leftmargin}{2.6em}%
+    \setlength{\leftmargin}{2.8em}%
     \setlength{\itemindent}{0pt}%
     \setlength{\itemsep}{0.55em}%
     \setlength{\parsep}{0pt}%
-    \renewcommand{\makelabel}[1]{##1\hss}}%
-   \sloppy}
-  {\endlist}
-  {\item}
+    \setlength{\topsep}{2pt}%
+    \renewcommand{\makelabel}[1]{\makebox[\labelwidth][r]{##1}}%
+  }%
+}{%
+  \end{list}%
+  \immediate\write\@auxout{%
+    \string\setcvpubtotal{\cv@publistkey}{\the\value{cvpubidx}}}%
+}
 
-% Descending label: highest number at top.
-% `cvbibsectiontotal` is set by the caller via \cvbibsection before \printbibliography.
-\newcounter{cvbibidx}
-\newcommand{\cvbibsectiontotal}{0}
-\newcommand{\cvbibsection}[1]{\renewcommand{\cvbibsectiontotal}{#1}\setcounter{cvbibidx}{0}}
-
-\newcommand{\cvbiblabel}{%
-  \stepcounter{cvbibidx}%
-  \makebox[2em][r]{\textbf{\the\numexpr\cvbibsectiontotal-\value{cvbibidx}+1\relax.}}%
+% \pub{authors}{year}{title (incl. trailing period or ?)}{venue, vol(iss), pp. \cvdoi{...}}{extras}
+\newcommand{\pub}[5]{%
+  \stepcounter{cvpubidx}%
+  \item[\textbf{\the\numexpr\cvpubtotal{\cv@publistkey}-\value{cvpubidx}+1\relax.}]%
+  #1 (#2). #3\ #4#5%
 }
 
 \endinput

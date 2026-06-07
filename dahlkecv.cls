@@ -6,6 +6,7 @@
 \RequirePackage[letterpaper,margin=0.85in,top=0.85in,bottom=0.9in]{geometry}
 \RequirePackage{fontspec}
 \RequirePackage{xcolor}
+\RequirePackage{graphicx}
 \RequirePackage{titlesec}
 \RequirePackage{enumitem}
 \RequirePackage{tabularx}
@@ -38,6 +39,20 @@
   Ligatures=TeX
 ]
 
+% Icon fonts, vendored in assets/icons/ and loaded by filename (same reliability
+% rationale as Termes): FontAwesome 6 Free for brand/UI glyphs, Academicons for
+% Google Scholar. Codepoints are FA6 / Academicons private-use values.
+\newfontfamily\faBrandsFont{FontAwesome6-Brands.otf}[Path=./assets/icons/]
+\newfontfamily\faSolidFont{FontAwesome6-Solid.otf}[Path=./assets/icons/]
+\newfontfamily\acadIconsFont{Academicons.otf}[Path=./assets/icons/]
+\newcommand{\faEmail}{{\faSolidFont\symbol{"F0E0}}}
+\newcommand{\faWeb}{{\faSolidFont\symbol{"F0AC}}}
+\newcommand{\faXicon}{{\faBrandsFont\symbol{"E61B}}}
+\newcommand{\faBlueskyIcon}{{\faBrandsFont\symbol{"E671}}}
+\newcommand{\faLinkedinIcon}{{\faBrandsFont\symbol{"F08C}}}
+\newcommand{\faGithubIcon}{{\faBrandsFont\symbol{"F09B}}}
+\newcommand{\aiScholar}{{\acadIconsFont\symbol{"E9D4}}}
+
 \pagestyle{fancy}
 \fancyhf{}
 \renewcommand{\headrulewidth}{0pt}
@@ -48,152 +63,134 @@
 
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{0.35em}
+
+% No hyphenation: never split a word (or a name like "Bernstein") across lines.
+% \emergencystretch lets justified lines stretch a little instead of overflowing,
+% and a raised \tolerance permits the resulting looser spacing without warnings.
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+\tolerance=1200
+\setlength{\emergencystretch}{3em}
 \setlist[itemize]{nosep,leftmargin=1.3em,label=\textbullet,topsep=2pt,partopsep=0pt}
 
+% Three visual tiers: section (large small-caps + trailing rule that fills to the
+% right margin), subsection (small small-caps, no rule), entry title (bold
+% title-case, set by the macros). Small caps make the headings read as labels
+% distinct from the bold entry names.
+% The fill-rule: title text, then a thin rule raised to the heading's mid-height
+% running to the right margin (\leaders…\hfill fills the remaining line width).
+\newcommand{\cvsectionrule}[1]{%
+  #1\hspace{0.6em}{\color{rule}\leaders\hrule height 0.30em depth -0.24em\hfill}\kern0pt}
 \titleformat{\section}%
-  {\Large\bfseries\color{accent}}{}{0em}{}%
-  [{\vspace{-0.2em}{\color{rule}\titlerule[0.5pt]}}]
-\titlespacing*{\section}{0pt}{1.2em}{0.3em}
+  {\Large\bfseries\color{accent}}{}{0em}{\cvsectionrule}
+\titlespacing*{\section}{0pt}{1.0em}{0.5em}
 
 \titleformat{\subsection}%
-  {\normalsize\bfseries\color{accent}}{}{0em}{}
-\titlespacing*{\subsection}{0pt}{0.8em}{0.2em}
+  {\large\bfseries\itshape\color{accent}}{}{0em}{}
+\titlespacing*{\subsection}{0pt}{0.75em}{0.6em}
 
-\newcommand{\cvheader}[6]{%
+% \cvheader{name}{title line}{contact bar}
+% Title line = role, unit, and institution on one line under the name. The
+% contact bar is a one-line row of \cvsocial / \cvicon items (see helpers below).
+\newcommand{\cvheader}[3]{%
   \begingroup
-  \setlength{\tabcolsep}{0pt}
-  \renewcommand{\arraystretch}{1.1}
-  \begin{tabularx}{\textwidth}{@{}X r@{}}
-    {\LARGE\bfseries\color{accent}#1} & {\small\color{muted} #4}\\
-    {\large #2}                       & {\small\color{muted} #5}\\
-    {\normalsize\itshape\color{muted} #3} & {\small\color{muted} #6}\\
-  \end{tabularx}%
-  \par\vspace{0.4em}
+  % Name row: name left, UW crest right-justified (sized like a small mark so the
+  % full-width title line below is unaffected).
+  {\LARGE\bfseries\color{accent}#1}\hfill
+  \raisebox{-0.22\height}{\includegraphics[height=0.9cm]{assets/uw-crest.pdf}}%
+  \par\vspace{0.25em}
+  {#2}\par\vspace{0.55em}
+  {\footnotesize\color{muted}#3\par}%
+  \vspace{0.1em}
   \endgroup
 }
 
+% Contact-bar building blocks. \cvsocial is an icon + linked text label (used for
+% email and website); \cvicon is an icon-only linked item (used for the social /
+% scholar profiles, whose logos identify them — keeps the whole bar to one line).
+% \cvsep is the bulleted divider; \cviconsep is the tight gap between bare icons.
+\newcommand{\cvsocial}[3]{\href{#2}{{\color{muted}#1\nobreak\hspace{0.35em}#3}}}
+\newcommand{\cvicon}[2]{\href{#2}{{\color{muted}#1}}}
+\newcommand{\cvsep}{\nobreak\hskip 0.55em\textcolor{rule}{\textbullet}\hskip 0.55em\relax}
+\newcommand{\cviconsep}{\hspace{0.55em}}
+
+% Entry macros use a left-text + \hfill + right-text layout (NOT a 2-column
+% table): each logical line puts its title/detail on the left and its date/
+% amount on the right *of the same baseline*, with real single-line spacing
+% between the title and its detail. \cv@line is the shared one-line helper;
+% \cv@tight is the tight break between a title and its detail line.
+\newcommand{\cv@line}[2]{#1\nobreak\hfill\nobreak#2}
+% Starred \\ forbids a page break at the forced line break, so an entry's stacked
+% lines (title + detail) never split across a page boundary.
+\newcommand{\cv@tight}{\\*[-0.12em]}
+\newcommand{\cv@gap}{\vspace{0.55em}}
+% Shared keep-together setup for entry macros: zero intra-entry \parskip and max
+% out the penalties so a single entry (incl. wrapped lines) stays on one page.
+% Breaks still occur between entries at \cv@gap. Mirrors the publist protection.
+\newcommand{\cv@entrysetup}{%
+  \setlength{\parskip}{0pt}\interlinepenalty\@M\clubpenalty\@M\widowpenalty\@M}
+
 \newcommand{\cventry}[5]{%
-  \begingroup
-  \setlength{\tabcolsep}{0pt}
-  \begin{tabularx}{\textwidth}{@{}X r@{}}
-    \textbf{#2} & \textit{\color{muted} #3}\\
-    #1 & \textit{\color{muted} #4}\\
-  \end{tabularx}%
-  \ifstrempty{#5}{\vspace{0.15em}}{%
-    \begin{itemize}#5\end{itemize}%
-  }%
-  \vspace{0.3em}
-  \endgroup
+  \begingroup\cv@entrysetup{}%
+  \noindent\cv@line{\textbf{#2}}{\textit{\color{muted}#3}}\cv@tight
+  \cv@line{#1}{\textit{\color{muted}#4}}\par
+  \ifstrempty{#5}{\vspace{0.12em}}{\nopagebreak\begin{itemize}#5\end{itemize}}%
+  \cv@gap\endgroup
 }
 
 \newcommand{\cvedu}[6]{%
-  \begingroup
-  \setlength{\tabcolsep}{0pt}
-  \begin{tabularx}{\textwidth}{@{}X r@{}}
-    \textbf{#1} & \textit{\color{muted} #2}\\
-    #3 & \textit{\color{muted} #5}\\
-  \end{tabularx}%
-  \ifstrempty{#4}{}{\hspace{1.3em}{\itshape\color{muted} #4}\par}%
-  \ifstrempty{#6}{\vspace{0.15em}}{%
-    \begin{itemize}#6\end{itemize}%
-  }%
-  \vspace{0.3em}
-  \endgroup
-}
-
-% #1 talk title (bold, top-left; gets most of the width because right col is just the date)
-% #2 venue / event series (muted, second-line-left)
-% #3 host institution (muted, second-line-left, joined to venue with a bullet)
-% #4 date (italic muted, top-right)
-\newcommand{\cvtalk}[4]{%
-  \begingroup
-  \setlength{\tabcolsep}{0pt}
-  \begin{tabularx}{\textwidth}{@{}X r@{}}
-    \textbf{#1} & \textit{\color{muted} #4}\\
-    \ifstrempty{#2#3}{\relax}{%
-      {\color{muted}%
-        \ifstrempty{#2}{}{#2\ifstrempty{#3}{}{ \textperiodcentered{} }}%
-        #3%
-      }%
-    } & \\
-  \end{tabularx}%
-  \vspace{0.35em}
-  \endgroup
-}
-
-% #1 award name (bold, top-left)
-% #2 granting institution (muted, second-line-left)
-% #3 dollar amount (bold, second-line-right) — may be empty
-% #4 year (italic muted, top-right)
-\newcommand{\cvaward}[4]{%
-  \begingroup
-  \setlength{\tabcolsep}{0pt}
-  \begin{tabularx}{\textwidth}{@{}X r@{}}
-    \textbf{#1} & \textit{\color{muted} #4}\\
-    {\color{muted}#2} & \ifstrempty{#3}{\relax}{\textbf{#3}}\\
-  \end{tabularx}%
-  \vspace{0.3em}
-  \endgroup
-}
-
-% #1 course code (bold, top-left)
-% #2 course title (follows code after em-dash on top-left)
-% #3 institution (small muted, second line)
-% #4 role (small muted, second line, after institution)
-% #5 term(s) (italic muted, top-right)
-\newcommand{\cvcourse}[5]{%
-  \begingroup
-  \setlength{\tabcolsep}{0pt}
-  \begin{tabularx}{\textwidth}{@{}X r@{}}
-    \textbf{#1}\ifstrempty{#2}{}{ \textendash{} #2} & \textit{\color{muted} #5}\\
-    \ifstrempty{#3#4}{\relax}{%
-      {\color{muted}#3\ifstrempty{#3}{}{\ifstrempty{#4}{}{ \textperiodcentered{} }}#4}%
-    } & \\
-  \end{tabularx}%
-  \vspace{0.3em}
-  \endgroup
-}
-
-% #1 advisee name (bold, top-left)
-% #2 degree program (muted, second-line-left)
-% #3 role/committee (muted, second-line-left, after degree with bullet)
-% #4 research topic or thesis (italic muted, third line)
-% #5 dates (italic muted, top-right)
-\newcommand{\cvadvisee}[5]{%
-  \begingroup
-  \setlength{\tabcolsep}{0pt}
-  \begin{tabularx}{\textwidth}{@{}X r@{}}
-    \textbf{#1} & \textit{\color{muted} #5}\\
-    \ifstrempty{#2#3}{\relax}{%
-      {\color{muted}%
-        \ifstrempty{#2}{}{#2\ifstrempty{#3}{}{ \textperiodcentered{} }}%
-        #3%
-      }%
-    } & \\
-  \end{tabularx}%
+  \begingroup\cv@entrysetup{}%
+  \noindent\cv@line{\textbf{#1}}{\textit{\color{muted}#2}}\cv@tight
+  \cv@line{#3}{\textit{\color{muted}#5}}\par
   \ifstrempty{#4}{}{{\itshape\color{muted}#4}\par}%
-  \vspace{0.3em}
-  \endgroup
+  \ifstrempty{#6}{\vspace{0.12em}}{\nopagebreak\begin{itemize}#6\end{itemize}}%
+  \cv@gap\endgroup
 }
 
-% #1 role held (muted, second-line-left)
-% #2 organization / venue (bold, top-left)
-% #3 URL (muted link, second-line-left, after role with bullet) — may be empty
-% #4 dates (italic muted, top-right)
+% #1 talk title (bold) · #2 venue · #3 host (· joins #2/#3) · #4 date (right)
+\newcommand{\cvtalk}[4]{%
+  \begingroup\cv@entrysetup{}%
+  \noindent\cv@line{\textbf{#1}}{\textit{\color{muted}#4}}%
+  \ifstrempty{#2#3}{}{\cv@tight
+    {\color{muted}\ifstrempty{#2}{}{#2\ifstrempty{#3}{}{ \textperiodcentered{} }}#3}}%
+  \par\cv@gap\endgroup
+}
+
+% #1 award name (bold) · #2 institution · #3 amount (right, 2nd line) · #4 year (right)
+\newcommand{\cvaward}[4]{%
+  \begingroup\cv@entrysetup{}%
+  \noindent\cv@line{\textbf{#1}}{\textit{\color{muted}#4}}%
+  \ifstrempty{#2#3}{}{\cv@tight
+    \cv@line{\color{muted}#2}{\ifstrempty{#3}{}{\textbf{#3}}}}%
+  \par\cv@gap\endgroup
+}
+
+% #1 course code (bold) · #2 title (after en-dash) · #3 institution · #4 role · #5 term (right)
+\newcommand{\cvcourse}[5]{%
+  \begingroup\cv@entrysetup{}%
+  \noindent\cv@line{\textbf{#1}\ifstrempty{#2}{}{ \textendash{} #2}}{\textit{\color{muted}#5}}%
+  \ifstrempty{#3#4}{}{\cv@tight
+    {\color{muted}#3\ifstrempty{#3}{}{\ifstrempty{#4}{}{ \textperiodcentered{} }}#4}}%
+  \par\cv@gap\endgroup
+}
+
+% #1 advisee name (bold) · #2 program · #3 role · #4 topic/placement · #5 dates (right)
+\newcommand{\cvadvisee}[5]{%
+  \begingroup\cv@entrysetup{}%
+  \noindent\cv@line{\textbf{#1}}{\textit{\color{muted}#5}}%
+  \ifstrempty{#2#3}{}{\cv@tight
+    {\color{muted}\ifstrempty{#2}{}{#2\ifstrempty{#3}{}{ \textperiodcentered{} }}#3}}%
+  \ifstrempty{#4}{}{\cv@tight{\itshape\color{muted}#4}}%
+  \par\cv@gap\endgroup
+}
+
+% #1 role · #2 organization (bold) · #3 URL · #4 dates (right)
 \newcommand{\cvservice}[4]{%
-  \begingroup
-  \setlength{\tabcolsep}{0pt}
-  \begin{tabularx}{\textwidth}{@{}X r@{}}
-    \textbf{#2} & \textit{\color{muted} #4}\\
-    \ifstrempty{#1#3}{\relax}{%
-      {\color{muted}%
-        \ifstrempty{#1}{}{#1\ifstrempty{#3}{}{ \textperiodcentered{} }}%
-        \ifstrempty{#3}{}{\href{#3}{\color{accent}#3}}%
-      }%
-    } & \\
-  \end{tabularx}%
-  \vspace{0.3em}
-  \endgroup
+  \begingroup\cv@entrysetup{}%
+  \noindent\cv@line{\textbf{#2}}{\textit{\color{muted}#4}}%
+  \ifstrempty{#1#3}{}{\cv@tight
+    {\color{muted}\ifstrempty{#1}{}{#1\ifstrempty{#3}{}{ \textperiodcentered{} }}\ifstrempty{#3}{}{\href{#3}{\color{accent}#3}}}}%
+  \par\cv@gap\endgroup
 }
 
 \newcommand{\cvreviewerlist}[1]{%
@@ -222,9 +219,12 @@
 
 % Optional per-paper sub-lines (used as the 5th arg of \pub).
 \newcommand{\pubaward}[1]{%
-  \par\vspace{1pt}{\small\color{muted}\textit{Award}~\textperiodcentered~#1}}
+  \par\nobreak\vspace{1pt}\nobreak{\small\color{muted}\textit{Award}~\textperiodcentered~#1}}
 \newcommand{\pubcoverage}[1]{%
-  \par\vspace{1pt}{\small\color{muted}\textit{Coverage}~\textperiodcentered~#1}}
+  \par\nobreak\vspace{1pt}\nobreak{\small\color{muted}\textit{Coverage}~\textperiodcentered~#1}}
+% Generic per-paper clarifying note (e.g. "venue X is a peer-reviewed journal").
+\newcommand{\pubnote}[1]{%
+  \par\nobreak\vspace{1pt}\nobreak{\small\color{muted}\textit{Note}~\textperiodcentered~#1}}
 
 % Descending numbers with NO hardcoded totals: each publist writes its entry
 % count to the .aux under a key; the next compile reads it back so labels run
@@ -247,6 +247,10 @@
     \setlength{\topsep}{2pt}%
     \renewcommand{\makelabel}[1]{\makebox[\labelwidth][r]{##1}}%
   }%
+  % Keep each publication entry together: forbid page breaks within an item's
+  % paragraph (and its award/coverage/note sub-lines via \nobreak in those
+  % macros). Breaks still happen between entries at \itemsep.
+  \interlinepenalty\@M \clubpenalty\@M \widowpenalty\@M
 }{%
   \end{list}%
   \immediate\write\@auxout{%

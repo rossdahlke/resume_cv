@@ -7,6 +7,9 @@
 # Fonts (resolved from TeX Live via kpsewhich; never tracked)
 fonts/
 
+# Colleague reference CVs (kept local for formatting reference; never redistributed)
+reference/
+
 # XeLaTeX build artifacts
 *.aux
 *.bbl

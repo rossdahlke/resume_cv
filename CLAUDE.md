@@ -83,11 +83,21 @@ Publications, Manuscripts Under Review, and Working Papers & Reports are plain h
 ### Adding a publication
 
 1. Add a `\pub{…}{…}{…}{…}{…}` entry to the right `publist` in `sections/publications.tex` (Publications / Manuscripts Under Review / Working Papers & Reports).
-2. **Place it in the correct position — the first entry in a list renders at the top (highest number):**
+2. **Place it in the correct position — the first entry in a list renders at the top (highest number). The two list types order DIFFERENTLY:**
+
+   **Main Publications list** (published + forthcoming/in-press articles) — order by:
+   1. **Year** (newest to oldest). A forthcoming/in-press article with no assigned issue uses its expected/current year.
+   2. **Authorship** — the PRIMARY within-year tiebreaker. Ross as first or co-first author (`*`) ranks above *every* middle/later-author paper of the same year, regardless of that paper's venue or status. (A first-author *JQD* paper outranks a middle-author *PNAS* paper.)
+   3. **Publication status** (within the same year AND authorship tier): published / advance-online before forthcoming / accepted / in-press.
+   4. **Venue prestige** (within the same year, authorship tier, and status): higher-prestige venues first. This is only the default for placing a NEW entry — Ross may hand-feature a specific paper higher than prestige order (e.g., the *JQD* Polymarket paper leads the 2026 block by choice). Preserve the existing hand-order; never re-sort already-placed published entries by prestige on your own.
+
+   > **CRITICAL — never put a forthcoming/in-press paper at the top of the Publications list.** "Forthcoming" is NOT the highest priority here. A forthcoming middle-author paper sits at the BOTTOM of its year's block, below every published first/co-first-author paper of that year. The "Forthcoming/Accepted > Conditionally Accepted > R&R > Under Review" status ladder applies ONLY to the Research-in-Progress lists (below), never to the main Publications list. **Failure mode (2026-07): a forthcoming 8th-of-11-author *New Media & Society* paper was placed at #17, above the first-author *Political Communication* paper. Authorship comes first; forthcoming does not leapfrog published first-author work.**
+
+   **Research-in-Progress lists** (Manuscripts Under Review) — order by:
    1. **Year** (newest to oldest).
-   2. **Publication status** (within year): Forthcoming/Accepted > Conditionally Accepted > Revise & Resubmit > Under Review > Invited to Submit.
-   3. **Authorship**: within a status, Ross as first author (or co-first with `*`) before middle/later-author papers.
-   4. **Venue prestige**: within a status and authorship group, higher-prestige venues first.
+   2. **Publication status**: Conditionally Accepted > Revise & Resubmit > Under Review > Invited to Submit.
+   3. **Authorship**: Ross first/co-first before middle/later author.
+   4. **Venue prestige**.
 3. Bold the name (`\textbf{Dahlke, R.}`); for co-first papers place the `*` after the surname while keeping the full name bold (`\textbf{Dahlke}*\textbf{, R.}`), give the title its own trailing `.`/`?`, add `\cvdoi{}`/`\cvurl{}` for links. No counts to bump — numbers auto-update.
 4. Rebuild with `latexmk -xelatex`.
 

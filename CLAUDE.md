@@ -23,7 +23,9 @@ This repo holds Ross Dahlke's academic CV, hand-authored in **pure LaTeX** again
 - `fonts/` — gitignored, unused by the Termes-based build.
 - `reference/peer-cvs/` — gitignored. Local-only copies of UW–Madison colleagues' CVs (Kim, Shah, Wagner, Yang, Rojas, McLeod, Riddle) kept as formatting reference for the tenure-CV layout; never tracked or redistributed.
 
-The CV layout follows the **UW–Madison Social Sciences Divisional Committee** tenure-CV checklist plus departmental conventions (see memory `uw-soc-sci-cv-format`).
+The CV layout follows the **UW–Madison Social Sciences Divisional Committee** tenure-CV checklist plus departmental conventions. The authoritative source is item 6 of the divisional "Guidelines for Recommendations for Promotion or Appointment to Tenure Rank" (effective May 2026, p. 8): https://kb.wisc.edu/images/group222/138347/SocSciences/SocTenure-guidelines2026-2027.pdf. Kim and Wagner are former divisional committee members, so their peer CVs are the strongest formatting precedent.
+
+Naming rules: Ross' UW undergraduate degree is a **JBA**, never "BA". Write the school as "School of Journalism and Mass Communication" with "and", never an ampersand; the one exception is the JBA degree line, where "Journalism \& Mass Communication and Political Science" keeps the ampersand so it does not read as three majors. Publication and manuscript titles use sentence case (APA 7; Ross, 2026-06-10), with venue names in title case and proper nouns and acronyms capitalized.
 
 ## Building the CV
 

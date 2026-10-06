@@ -80,6 +80,8 @@ Publications, Manuscripts Under Review, and Working Papers & Reports are plain h
 
 ## Common Workflows
 
+Commit after each update. Ask Ross before pushing, and push only after he says so. Ross (2026-10-06): "A CV and website update should ask me." The same rule holds in `~/git/personal-website`.
+
 ### Adding a publication
 
 1. Add a `\pub{…}{…}{…}{…}{…}` entry to the right `publist` in `sections/publications.tex` (Publications / Manuscripts Under Review / Working Papers & Reports).
